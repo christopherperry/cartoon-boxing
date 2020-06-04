@@ -1065,6 +1065,7 @@ GameObject:
   - component: {fileID: 974335525}
   - component: {fileID: 974335524}
   - component: {fileID: 974335527}
+  - component: {fileID: 974335528}
   m_Layer: 0
   m_Name: BlueBoxer
   m_TagString: Untagged
@@ -1177,7 +1178,20 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
+--- !u!114 &974335528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 974335523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77d1774ad80bf204cbf732ee676d182a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 3
 --- !u!1 &1281652249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,7 +1317,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &1281652254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1316,7 +1330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d1774ad80bf204cbf732ee676d182a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 0
+  movementSpeed: 3
 --- !u!1 &1803703570
 GameObject:
   m_ObjectHideFlags: 0

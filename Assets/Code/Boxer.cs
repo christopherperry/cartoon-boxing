@@ -16,6 +16,8 @@ public class Boxer : MonoBehaviour
     private bool isPunchRight;
     private Vector2 movement;
 
+    private bool canPunch;
+
     private void Awake()
     {
         boxingInputActions = new BoxingInputActions();
@@ -28,7 +30,7 @@ public class Boxer : MonoBehaviour
 
         // Moving
         boxingInputActions.Boxer.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
-        boxingInputActions.Boxer.Move.canceled += ctx => { movement = Vector2.zero; rigidbody.velocity = Vector2.zero; };
+        boxingInputActions.Boxer.Move.canceled += ctx => movement = Vector2.zero;
 
         // Punch Left
         boxingInputActions.Boxer.PunchLeft.started += ctx => isPunchLeft = true;
@@ -49,16 +51,13 @@ public class Boxer : MonoBehaviour
         boxingInputActions.Disable();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         // Block
-        if (isBlocking)
-        {
-            animator.SetTrigger("block");
-        }
+        animator.SetBool("block", isBlocking);
 
         // Punch Up
-        else if (movement.y > 0)
+        if (canPunch && movement.y > 0)
         {
             if (isPunchLeft || isPunchRight)
             {
@@ -67,13 +66,13 @@ public class Boxer : MonoBehaviour
         }
 
         // Punch Left
-        else if (isPunchLeft)
+        else if (canPunch && isPunchLeft)
         {
             animator.SetTrigger("punch-left");
         }
 
         // Punch Right
-        else if (isPunchRight)
+        else if (canPunch &&  isPunchRight)
         {
             animator.SetTrigger("punch-right");
         }
@@ -85,5 +84,15 @@ public class Boxer : MonoBehaviour
         }
 
         animator.SetFloat("velocity", rigidbody.velocity.x * transform.localScale.x);
+    }
+
+    public void SetCanPunch()
+    {
+        canPunch = true;
+    }
+
+    public void SetCannotPunch()
+    {
+        canPunch = false;
     }
 }
