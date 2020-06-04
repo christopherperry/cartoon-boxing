@@ -188,8 +188,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d1774ad80bf204cbf732ee676d182a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  totalHealth: 50
   movementSpeed: 3
   movementEnabled: 1
+  opponentLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  leftPunchTrigger: {fileID: 3104208441930730689}
+  rightPunchTrigger: {fileID: 6317494424367297403}
+  upPunchTrigger: {fileID: 5440848448863414367}
 --- !u!1 &7380260670612006855
 GameObject:
   m_ObjectHideFlags: 0
