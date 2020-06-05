@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2102194563}
   - component: {fileID: 2102194564}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: TauntTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,7 +67,7 @@ GameObject:
   m_Component:
   - component: {fileID: 891311662575178885}
   - component: {fileID: 3104208441930730689}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LeftPunchTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,9 +247,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d1774ad80bf204cbf732ee676d182a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalHealth: 50
+  maxHealth: 5
+  dizzyTimeSeconds: 2
   movementSpeed: 3
-  movementEnabled: 0
+  movementEnabled: 1
   opponentLayerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -476,7 +477,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5955580592349830319}
   - component: {fileID: 6317494424367297403}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: RightPunchTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -523,7 +524,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3293866832971752200}
   - component: {fileID: 5440848448863414367}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: UpPunchTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
