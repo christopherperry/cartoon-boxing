@@ -13,13 +13,22 @@ public class Boxer : MonoBehaviour
     public Collider2D leftPunchTrigger;
     public Collider2D rightPunchTrigger;
     public Collider2D upPunchTrigger;
+    public Collider2D tauntTrigger;
+    public AudioClip leftHurtClip;
+    public AudioClip rightHurtClip;
+    public AudioClip upHurtClip;
+    public AudioClip dizzyClip;
+    public AudioClip knockoutClip;
+    public AudioClip punchBlockedClip;
+    public AudioClip tauntClip;
+    public AudioClip punchThrow;
+    public AudioClip heavyPunchThrow;
 
     private Animator animator;
+    private AudioSource audioSource;
     private Rigidbody2D rigidbody;
 
     private bool isBlocking;
-    private bool isPunchLeft;
-    private bool isPunchRight;
     private Vector2 movement;
 
     private bool canPunch;
@@ -29,6 +38,7 @@ public class Boxer : MonoBehaviour
     {
         boxingInputActions = new BoxingInputActions();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         rigidbody = GetComponent<Rigidbody2D>();
 
         contactFilter = new ContactFilter2D();
@@ -37,8 +47,8 @@ public class Boxer : MonoBehaviour
         contactFilter.useTriggers = false;
 
         // Blocking
-        boxingInputActions.Boxer.Block.started += ctx => isBlocking = true;
-        boxingInputActions.Boxer.Block.canceled += ctx => isBlocking = false;
+        boxingInputActions.Boxer.Block.started += OnBlockStarted;
+        boxingInputActions.Boxer.Block.canceled += OnBlockCanceled;
 
         // Moving
         boxingInputActions.Boxer.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
@@ -46,10 +56,9 @@ public class Boxer : MonoBehaviour
 
         // Punch Left
         boxingInputActions.Boxer.PunchLeft.started += OnPunchLeftStarted;
-        boxingInputActions.Boxer.PunchLeft.canceled += OnPunchLeftCanceled;
+
         // Punch Right
         boxingInputActions.Boxer.PunchRight.started += OnPunchRightStarted;
-        boxingInputActions.Boxer.PunchRight.canceled += OnPunchRightCanceled;
     }
 
     private void OnEnable()
@@ -63,86 +72,72 @@ public class Boxer : MonoBehaviour
         boxingInputActions.Disable();
     }
 
+    private void OnBlockStarted(CallbackContext ctx)
+    {
+        isBlocking = true;
+        animator.SetBool("block", isBlocking);
+
+        if (!tauntTrigger.IsTouchingLayers(opponentLayerMask))
+        {
+            audioSource.PlayOneShot(tauntClip);
+        }
+    }
+
+    private void OnBlockCanceled(CallbackContext ctx)
+    {
+        isBlocking = false;
+        animator.SetBool("block", isBlocking);
+    }
+
     private void OnPunchLeftStarted(CallbackContext ctx)
     {
         if (transform.localScale.x > 0)
         {
-            isPunchLeft = true;
+            OnLeftPunchAction();
         }
         else
         {
-            isPunchRight = true;
-        }
-    }
-
-    private void OnPunchLeftCanceled(CallbackContext ctx)
-    {
-        if (transform.localScale.x > 0)
-        {
-            isPunchLeft = false;
-        }
-        else
-        {
-            isPunchRight = false;
+            OnRightPunchAction();
         }
     }
 
     private void OnPunchRightStarted(CallbackContext ctx)
     {
-        if (transform.localScale.x > 0)
+        if (movement.y > 0)
         {
-            isPunchRight = true;
+            OnUpPunchAction();
+        }
+        else if (transform.localScale.x > 0)
+        {
+            OnRightPunchAction();
         }
         else
         {
-            isPunchLeft = true;
+            OnLeftPunchAction();
         }
     }
 
-    private void OnPunchRightCanceled(CallbackContext ctx)
+    private void OnLeftPunchAction()
     {
-        if (transform.localScale.x > 0)
-        {
-            isPunchRight = false;
-        }
-        else
-        {
-            isPunchLeft = false;
-        }
+        animator.SetTrigger("punch-left");
+        audioSource.PlayOneShot(punchThrow);
     }
 
-    private void Update()
+    private void OnRightPunchAction()
     {
-        // Block
-        animator.SetBool("block", isBlocking);
+        animator.SetTrigger("punch-right");
+        audioSource.PlayOneShot(punchThrow);
+    }
 
-        // Punch Up
-        if (canPunch && movement.y > 0)
-        {
-            if (isPunchLeft || isPunchRight)
-            {
-                animator.SetTrigger("punch-up");
-            }
-        }
+    private void OnUpPunchAction()
+    {
+        animator.SetTrigger("punch-up");
+        audioSource.PlayOneShot(heavyPunchThrow);
+    }
 
-        // Punch Left
-        else if (canPunch && isPunchLeft)
-        {
-            animator.SetTrigger("punch-left");
-        }
-
-        // Punch Right
-        else if (canPunch && isPunchRight)
-        {
-            animator.SetTrigger("punch-right");
-        }
-
-        // Move
-        else
-        {
-            rigidbody.velocity = new Vector2(movement.x * movementSpeed, 0f);
-        }
-
+    private void FixedUpdate()
+    {
+        rigidbody.velocity = new Vector2(movement.x * movementSpeed, 0f);
         animator.SetFloat("velocity", rigidbody.velocity.x * transform.localScale.x);
     }
 
@@ -156,10 +151,18 @@ public class Boxer : MonoBehaviour
         canPunch = false;
     }
 
-    public void ReceivePunch(int damage)
+    public void ReceivePunch(int damage, AudioClip hurtClip)
     {
-        totalHealth -= damage;
-        animator.SetTrigger("hurt");
+        if (isBlocking)
+        {
+            audioSource.PlayOneShot(punchBlockedClip);
+        }
+        else
+        {
+            totalHealth -= damage;
+            animator.SetTrigger("hurt");
+            audioSource.PlayOneShot(hurtClip);
+        }
     }
 
     private void OnLeftPunch()
@@ -168,9 +171,12 @@ public class Boxer : MonoBehaviour
         if (transform.localScale.x < 0)
         {
             collider = rightPunchTrigger;
+            OnPunch(collider, rightHurtClip);
         }
-
-        OnPunch(collider);
+        else
+        {
+            OnPunch(collider, leftHurtClip);
+        }
     }
 
     private void OnRightPunch()
@@ -179,23 +185,26 @@ public class Boxer : MonoBehaviour
         if (transform.localScale.x < 0)
         {
             collider = leftPunchTrigger;
+            OnPunch(collider, leftHurtClip);
         }
-
-        OnPunch(collider);
+        else
+        {
+            OnPunch(collider, rightHurtClip);
+        }
     }
 
     private void OnUpPunch()
     {
-        OnPunch(upPunchTrigger);
+        OnPunch(upPunchTrigger, upHurtClip);
     }
 
-    private void OnPunch(Collider2D collider)
+    private void OnPunch(Collider2D collider, AudioClip hurtClip)
     {
         var hits = new List<Collider2D>();
         int numHits = collider.OverlapCollider(contactFilter, hits);
         if (numHits > 0)
         {
-            hits[0].gameObject.GetComponent<Boxer>().ReceivePunch(1);
+            hits[0].gameObject.GetComponentInParent<Boxer>().ReceivePunch(1, hurtClip);
         }
     }
 }
