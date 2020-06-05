@@ -6,8 +6,6 @@ using static UnityEngine.InputSystem.InputAction;
 
 public class Boxer : MonoBehaviour
 {
-    private BoxingInputActions boxingInputActions;
-
     public int maxHealth = 50;
     public float dizzyTimeSeconds = 2f;
     public float movementSpeed;
@@ -43,7 +41,6 @@ public class Boxer : MonoBehaviour
     {
         totalHealth = maxHealth;
 
-        boxingInputActions = new BoxingInputActions();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         rigidbody = GetComponent<Rigidbody2D>();
@@ -52,54 +49,32 @@ public class Boxer : MonoBehaviour
         contactFilter.useLayerMask = true;
         contactFilter.layerMask = opponentLayerMask;
         contactFilter.useTriggers = false;
-
-        // Blocking
-        boxingInputActions.Boxer.Block.started += OnBlockStarted;
-        boxingInputActions.Boxer.Block.canceled += OnBlockCanceled;
-
-        // Moving
-        boxingInputActions.Boxer.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
-        boxingInputActions.Boxer.Move.canceled += ctx => movement = Vector2.zero;
-
-        // Punch Left
-        boxingInputActions.Boxer.PunchLeft.started += OnPunchLeftStarted;
-
-        // Punch Right
-        boxingInputActions.Boxer.PunchRight.started += OnPunchRightStarted;
-    }
-
-    private void OnEnable()
-    {
-        if (movementEnabled)
-            boxingInputActions.Enable();
-    }
-
-    private void OnDisable()
-    {
-        boxingInputActions.Disable();
     }
 
     #region Input Action Handling
 
-    private void OnBlockStarted(CallbackContext ctx)
+    private void OnMove(InputValue inputValue)
     {
-        isBlocking = true;
+        Debug.Log("OnMove: value = " + inputValue.Get<Vector2>());
+        movement = inputValue.Get<Vector2>();
+    }
+
+    private void OnBlock(InputValue inputValue)
+    {
+        Debug.Log("OnBlock: pressed = " + inputValue.isPressed);
+        isBlocking = inputValue.isPressed;
+
         animator.SetBool("block", isBlocking);
 
-        if (!tauntTrigger.IsTouchingLayers(opponentLayerMask) && Mathf.Abs(movement.x) == 0)
+        if (!isBlocking && !tauntTrigger.IsTouchingLayers(opponentLayerMask) && Mathf.Abs(movement.x) == 0)
         {
             audioSource.PlayOneShot(tauntClip);
         }
     }
 
-    private void OnBlockCanceled(CallbackContext ctx)
+    private void OnPunchLeft(InputValue inputValue)
     {
-        isBlocking = false;
-        animator.SetBool("block", isBlocking);
-    }
-
-    private void OnPunchLeftStarted(CallbackContext ctx)
-    {
+        Debug.Log("OnPunchLeft");
         if (transform.localScale.x < 0 && movement.y > 0)
         {
             OnUpPunchAction();
@@ -114,8 +89,9 @@ public class Boxer : MonoBehaviour
         }
     }
 
-    private void OnPunchRightStarted(CallbackContext ctx)
+    private void OnPunchRight(InputValue inputValue)
     {
+        Debug.Log("OnPunchRight");
         if (transform.localScale.x > 0 && movement.y > 0)
         {
             OnUpPunchAction();
