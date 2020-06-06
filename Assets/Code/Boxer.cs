@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.InputSystem.InputAction;
 
 public class Boxer : MonoBehaviour
 {
@@ -33,7 +32,8 @@ public class Boxer : MonoBehaviour
     private bool isDead;
     private Vector2 movement;
 
-    private bool canPunch;
+    private bool canPunch = true;
+    private bool canMove = true;
     private int totalHealth;
     private ContactFilter2D contactFilter;
 
@@ -63,6 +63,7 @@ public class Boxer : MonoBehaviour
     {
         Debug.Log("OnBlock: pressed = " + inputValue.isPressed);
         isBlocking = inputValue.isPressed;
+        canPunch = !isBlocking;
 
         animator.SetBool("block", isBlocking);
 
@@ -74,6 +75,9 @@ public class Boxer : MonoBehaviour
 
     private void OnPunchLeft(InputValue inputValue)
     {
+        if (!canPunch) return;
+        canMove = false;
+
         Debug.Log("OnPunchLeft");
         if (transform.localScale.x < 0 && movement.y > 0)
         {
@@ -91,6 +95,9 @@ public class Boxer : MonoBehaviour
 
     private void OnPunchRight(InputValue inputValue)
     {
+        if (!canPunch) return;
+        canMove = false;
+
         Debug.Log("OnPunchRight");
         if (transform.localScale.x > 0 && movement.y > 0)
         {
@@ -130,7 +137,7 @@ public class Boxer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isDead || isBlocking)
+        if (isDead || isBlocking || !canMove)
         {
             rigidbody.velocity = Vector2.zero;
         }
@@ -182,14 +189,16 @@ public class Boxer : MonoBehaviour
 
     #region Stuff that's called from the Animator
 
-    public void SetCanPunch()
+    public void OnPunchStart()
     {
-        canPunch = true;
+        canMove = false;
+        canPunch = false;
     }
 
-    public void SetCannotPunch()
+    public void OnPunchEnd()
     {
-        canPunch = false;
+        canMove = true;
+        canPunch = true;
     }
 
     private void SetDead()
@@ -275,15 +284,33 @@ public class Boxer : MonoBehaviour
 
     private IEnumerator GamepadRumbleHighCoroutine()
     {
-        Gamepad.current.SetMotorSpeeds(0f, 0.5f);
+        var gamepad = GetGamepad();
+        if (gamepad == null) yield return null;
+
+        gamepad.SetMotorSpeeds(0f, 0.5f);
         yield return new WaitForSecondsRealtime(0.15f);
-        Gamepad.current.ResetHaptics();
+        gamepad.ResetHaptics();
     }
 
     private IEnumerator GamepadRumbleLowCoroutine()
     {
-        Gamepad.current.SetMotorSpeeds(0.75f, 0f);
+        var gamepad = GetGamepad();
+        if (gamepad == null) yield return null;
+
+        gamepad.SetMotorSpeeds(0.75f, 0f);
         yield return new WaitForSecondsRealtime(0.2f);
-        Gamepad.current.ResetHaptics();
+        gamepad.ResetHaptics();
+    }
+
+    private Gamepad GetGamepad()
+    {
+        var devices = GetComponent<PlayerInput>().user.pairedDevices;
+        foreach (var device in devices)
+        {
+            var gamepad = device as Gamepad;
+            if (gamepad != null) return gamepad;
+        }
+
+        return null;
     }
 }
