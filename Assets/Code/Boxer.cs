@@ -153,10 +153,11 @@ public class Boxer : MonoBehaviour
 
     #region Being Punched By Other Boxer
 
-    public void ReceivePunch(int damage, AudioClip hurtClip)
+    public void ReceivePunch(Boxer otherBoxer, int damage, AudioClip hurtClip)
     {
         if (isBlocking)
         {
+            otherBoxer.OnPunchBlocked();
             audioSource.PlayOneShot(punchBlockedClip);
             return;
         }
@@ -258,8 +259,13 @@ public class Boxer : MonoBehaviour
                 RumbleGamepadHigh();
             }
 
-            hits[0].gameObject.GetComponentInParent<Boxer>().ReceivePunch(damage, hurtClip);
+            hits[0].gameObject.GetComponentInParent<Boxer>().ReceivePunch(this, damage, hurtClip);
         }
+    }
+
+    public void OnPunchBlocked()
+    {
+        // TODO: reduce stamina and when it runs out make the player unable to punch or block for a while
     }
 
     #endregion
