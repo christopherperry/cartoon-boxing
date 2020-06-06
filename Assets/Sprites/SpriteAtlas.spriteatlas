@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 98d2d9c09a47ae647a54ab0daa222a30, type: 3}
-    totalSpriteSurfaceArea: 58597856
+    totalSpriteSurfaceArea: 58598636
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -113,6 +113,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 561b62d4c0a18b8499192f3744e9b772, type: 3}
   - {fileID: 21300000, guid: 98f38ad44c993d94abf8de200f13c1ce, type: 3}
   - {fileID: 21300000, guid: 11954be4469f13a40bc129a246eea8f6, type: 3}
+  - {fileID: 21300000, guid: 9a6d3b25082857b4dbe169af7daecef6, type: 3}
   - {fileID: 21300000, guid: 1b96cc251968c884ba5f687e01fd58c5, type: 3}
   - {fileID: 21300000, guid: c164a945d7387624ea726673a5dc89f7, type: 3}
   - {fileID: 21300000, guid: 8d43ea65cf30ad548a1ce8dc762a39e3, type: 3}
@@ -132,6 +133,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2a19b0863d8eeb64fa1712ac138f3aad, type: 3}
   - {fileID: 21300000, guid: 31265b96bd6d42648b194b09d96939e5, type: 3}
   - {fileID: 21300000, guid: a0b5fd961edae734093558a7be52e1f5, type: 3}
+  - {fileID: 21300000, guid: e9aecfb6fcc6a0d498c155e071eb2bfc, type: 3}
   - {fileID: 21300000, guid: f19cbdc62d3e3a44b9e7391d673a7567, type: 3}
   - {fileID: 21300000, guid: 029c97d662f42584c9b8140121d4e811, type: 3}
   - {fileID: 21300000, guid: 5f98ebd677d8e224bb4ce57ab5b9c199, type: 3}
@@ -191,6 +193,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2b25f0cb4d88ce54ebad1f718a5a536b, type: 3}
   - {fileID: 21300000, guid: 8f69f1db2ce763047a8d39d4e1a7ed83, type: 3}
   - {fileID: 21300000, guid: abdddaeb3269b0d4aba76eeac1cd1ef5, type: 3}
+  - {fileID: 21300000, guid: 341d37fbd91415d4798967d217185fd8, type: 3}
   - {fileID: 21300000, guid: b730620c39738774c87fd689ba9d63da, type: 3}
   - {fileID: 21300000, guid: c2dbd61c5efeb7540932c5e34a039342, type: 3}
   - {fileID: 21300000, guid: 0416d02cc704555489ee9d6b0de1ad54, type: 3}
@@ -305,6 +308,7 @@ SpriteAtlas:
   - __Boxing04_Walk_007
   - __Boxing04_Blocking_008
   - __Boxing04_WalkBack_005
+  - Bar
   - 3
   - 1
   - __Boxing04_Blocking_000
@@ -324,6 +328,7 @@ SpriteAtlas:
   - __Boxing04_KO_005
   - __Boxing04_Walk_001
   - __Boxing04_Blocking_006
+  - blue-heart
   - __Boxing04_PunchRight_003
   - __Boxing04_PunchUp_004
   - __Boxing04_Walk_003
@@ -383,6 +388,7 @@ SpriteAtlas:
   - __Boxing04_Idle_009
   - __Boxing04_Blocking_005
   - __Boxing04_Hurt_001
+  - Heart
   - Sign02
   - Stone02
   - __Boxing04_PunchUp_000
