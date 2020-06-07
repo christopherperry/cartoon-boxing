@@ -6,25 +6,20 @@ public class PlayerInputManagerHelper : MonoBehaviour
     public GameObject redBoxerPrefab;
     public GameObject blueBoxerPrefab;
 
-    private void Awake()
-    {
-
-    }
+    public GameEvent onRedPlayerJoin;
+    public GameEvent onBluePlayerJoin;
 
     private void OnPlayerJoined(PlayerInput playerInput)
     {
+        if (PlayerInputManager.instance.playerPrefab == redBoxerPrefab)
+        {
+            onRedPlayerJoin.Raise();
+        }
+        else if (PlayerInputManager.instance.playerPrefab == blueBoxerPrefab)
+        {
+            onBluePlayerJoin.Raise();
+        }
+
         PlayerInputManager.instance.playerPrefab = blueBoxerPrefab;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
