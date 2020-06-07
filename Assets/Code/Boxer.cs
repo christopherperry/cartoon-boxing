@@ -5,7 +5,14 @@ using UnityEngine.InputSystem;
 
 public class Boxer : MonoBehaviour
 {
-    public int maxHealth = 50;
+    public FloatVariable maxHealth;
+    public FloatVariable currentHealth;
+    public GameEvent onHealthChange;
+
+    public FloatVariable maxHearts;
+    public FloatVariable currentHearts;
+    public GameEvent onHeartsChange;
+
     public float dizzyTimeSeconds = 2f;
     public float movementSpeed;
     public bool movementEnabled = true;
@@ -27,6 +34,7 @@ public class Boxer : MonoBehaviour
     private Animator animator;
     private AudioSource audioSource;
     private Rigidbody2D rigidbody;
+    private SpriteRenderer spriteRenderer;
 
     private bool isBlocking;
     private bool isDead;
@@ -34,21 +42,33 @@ public class Boxer : MonoBehaviour
 
     private bool canPunch = true;
     private bool canMove = true;
-    private int totalHealth;
     private ContactFilter2D contactFilter;
 
     private void Awake()
     {
-        totalHealth = maxHealth;
+        currentHealth.Value = maxHealth.Value;
+        currentHearts.Value = maxHearts.Value;
 
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         rigidbody = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         contactFilter = new ContactFilter2D();
         contactFilter.useLayerMask = true;
         contactFilter.layerMask = opponentLayerMask;
         contactFilter.useTriggers = false;
+    }
+
+    private void Start()
+    {
+        var gamepad = GetGamepad();
+        if (gamepad != null)
+        {
+            gamepad.ResetHaptics();
+        }
+
+        onHeartsChange.Raise();
     }
 
     #region Input Action Handling
@@ -155,6 +175,9 @@ public class Boxer : MonoBehaviour
 
     public void ReceivePunch(Boxer otherBoxer, int damage, AudioClip hurtClip)
     {
+        // Lose a heart whether blocking or not
+        LoseAHeart();
+
         if (isBlocking)
         {
             otherBoxer.OnPunchBlocked();
@@ -162,7 +185,8 @@ public class Boxer : MonoBehaviour
             return;
         }
 
-        totalHealth -= damage;
+        currentHealth.Value -= damage;
+        onHealthChange.Raise();
 
         if (damage > 1)
         {
@@ -173,9 +197,10 @@ public class Boxer : MonoBehaviour
             RumbleGamepadHigh();
         }
 
-        if (totalHealth <= 0)
+        if (currentHealth.Value <= 0)
         {
             Time.timeScale = 0.33f;
+            spriteRenderer.sortingOrder = spriteRenderer.sortingOrder - 1;
             animator.SetBool("ko", true);
             audioSource.PlayOneShot(knockoutClip);
         }
@@ -187,6 +212,13 @@ public class Boxer : MonoBehaviour
     }
 
     #endregion
+
+    private void LoseAHeart()
+    {
+        currentHearts.Value -= 1;
+        currentHearts.Value = Mathf.Max(0, currentHearts.Value);
+        onHeartsChange.Raise();
+    }
 
     #region Stuff that's called from the Animator
 
@@ -265,7 +297,7 @@ public class Boxer : MonoBehaviour
 
     public void OnPunchBlocked()
     {
-        // TODO: reduce stamina and when it runs out make the player unable to punch or block for a while
+        LoseAHeart();
     }
 
     #endregion
@@ -293,8 +325,8 @@ public class Boxer : MonoBehaviour
         var gamepad = GetGamepad();
         if (gamepad == null) yield return null;
 
-        gamepad.SetMotorSpeeds(0f, 0.5f);
-        yield return new WaitForSecondsRealtime(0.15f);
+        gamepad.SetMotorSpeeds(0f, 0.75f);
+        yield return new WaitForSecondsRealtime(0.2f);
         gamepad.ResetHaptics();
     }
 

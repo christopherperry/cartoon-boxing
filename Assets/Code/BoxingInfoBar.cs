@@ -18,18 +18,27 @@ public class BoxingInfoBar : MonoBehaviour
 
     public TextMeshProUGUI timerText;
 
-    private void Start() {
+    public FloatVariable redHeartsCount;
+    public TextMeshProUGUI redHeartsText;
+
+    public FloatVariable blueHeartsCount;
+    public TextMeshProUGUI blueHeartsText;
+
+    private void Start()
+    {
         StartRound();
     }
 
-    public void UpdateBlueHealthbar()
+    public void UpdateHealthBars()
     {
         blueSlider.value = blueHealth.Value / maxHealth.Value;
+        redSlider.value = redHealth.Value / maxHealth.Value;
     }
 
-    public void UpdateRedHealthbar()
+    public void UpdateHeartCounts()
     {
-        redSlider.value = redHealth.Value / maxHealth.Value;
+        redHeartsText.text = $"{redHeartsCount.Value}";
+        blueHeartsText.text = $"{blueHeartsCount.Value}";
     }
 
     public void StartRound()
