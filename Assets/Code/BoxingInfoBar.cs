@@ -9,6 +9,7 @@ public class BoxingInfoBar : MonoBehaviour
     public GameEvent endOfRoundEvent;
 
     public FloatVariable maxHealth;
+    public FloatVariable maxHearts;
 
     public FloatVariable redHealth;
     public Slider redSlider;
@@ -36,6 +37,9 @@ public class BoxingInfoBar : MonoBehaviour
     {
         timerText.text = TimeSpan.FromSeconds(0f).ToString(@"mm\:ss");
         roundText.text = $"Round {roundNumber}";
+
+        redHeartsText.text = $"{maxHearts.Value}";
+        blueHeartsText.text = $"{maxHearts.Value}";
 
         redWinsMessage.SetActive(false);
         blueWinsMessage.SetActive(false);
@@ -79,8 +83,7 @@ public class BoxingInfoBar : MonoBehaviour
         while (timeSeconds < roundTimeSeconds)
         {
             timeSeconds += 1;
-            Debug.Log("Time seconds = " + timeSeconds);
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.25f);
             timerText.text = TimeSpan.FromSeconds(timeSeconds).ToString(@"mm\:ss");
         }
 

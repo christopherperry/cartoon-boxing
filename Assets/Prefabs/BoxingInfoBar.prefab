@@ -1483,6 +1483,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   endOfRoundEvent: {fileID: 11400000, guid: 76dc29d2aa40ece4d8275ee441a1d945, type: 2}
   maxHealth: {fileID: 11400000, guid: 5cace594d406b7942bc329feb484f47f, type: 2}
+  maxHearts: {fileID: 11400000, guid: 011e2151d9ce0194f81d34b7356a8d65, type: 2}
   redHealth: {fileID: 11400000, guid: 02bad049d967dbd42a862f7e74456daf, type: 2}
   redSlider: {fileID: 1324827994713128720}
   blueHealth: {fileID: 11400000, guid: 62aa53ccaa290934eae9ef9edc135fdb, type: 2}

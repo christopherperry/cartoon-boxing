@@ -243,7 +243,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7380260669524238298}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77d1774ad80bf204cbf732ee676d182a, type: 3}
   m_Name: 
@@ -257,6 +257,7 @@ MonoBehaviour:
   currentHearts: {fileID: 11400000, guid: ecb5e6ed68ebd1c4da6d3573409a7b7e, type: 2}
   onHeartsChange: {fileID: 11400000, guid: d51999fe3df613843a67eab56fed9f51, type: 2}
   dizzyTimeSeconds: 2
+  heartsLostPerBlock: 3
   movementSpeed: 3
   movementEnabled: 1
   opponentLayerMask:
@@ -266,7 +267,7 @@ MonoBehaviour:
   rightPunchTrigger: {fileID: 6317494424367297403}
   upPunchTrigger: {fileID: 5440848448863414367}
   tauntTrigger: {fileID: 2102194564}
-  leftHurtClip: {fileID: 8300000, guid: e8543f0a40458c349bc99ac66be88a43, type: 3}
+  leftHurtClip: {fileID: 8300000, guid: 2fd57fdfc5ebc2f439a957a09a04e016, type: 3}
   rightHurtClip: {fileID: 8300000, guid: 4d7c22e14a7245d48b12d2fea2ba63f7, type: 3}
   upHurtClip: {fileID: 8300000, guid: 9832f12d1f15be44db8c96f475372c6b, type: 3}
   dizzyClip: {fileID: 8300000, guid: 050f90969eaa2e24bbe0faac8e1b4192, type: 3}

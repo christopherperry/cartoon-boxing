@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static Boxer;
 
 public class GameMaster : MonoBehaviour
@@ -13,6 +14,7 @@ public class GameMaster : MonoBehaviour
     public AudioClip roundStartClip;
     public AudioClip roundEndClip;
     public AudioClip knockoutClip;
+    public AudioClip winnerClip;
 
     public AudioSource musicAudioSource;
     public AudioClip menuClip;
@@ -34,7 +36,19 @@ public class GameMaster : MonoBehaviour
         PlayMenuMusic();
     }
 
-    public void OnPlayerJoin()
+    public void OnRedPlayerJoin()
+    {
+        EnableBoxerControls(BoxerName.Red, false);
+        OnPlayerJoin();
+    }
+
+    public void OnBluePlayerJoin()
+    {
+        EnableBoxerControls(BoxerName.Blue, false);
+        OnPlayerJoin();
+    }
+
+    private void OnPlayerJoin()
     {
         playerJoinCount++;
         audioSource.PlayOneShot(playerJoinClip);
@@ -47,7 +61,7 @@ public class GameMaster : MonoBehaviour
 
     public void OnRoundEnd()
     {
-        EnableBoxerControls(false);
+        DisableAllBoxersControls();
         StopRoundMusic();
         StartCoroutine(StartRoundCoroutine());
     }
@@ -55,6 +69,13 @@ public class GameMaster : MonoBehaviour
     public void OnKnockout()
     {
         StartCoroutine(KnockoutCoroutine());
+    }
+
+    private IEnumerator KnockoutCoroutine()
+    {
+        StopRoundMusic();
+        audioSource.PlayOneShot(knockoutClip);
+        yield return new WaitForSeconds(knockoutClip.length);
 
         var winnerName = GetWinnerName();
         if (winnerName == BoxerName.Red)
@@ -66,13 +87,7 @@ public class GameMaster : MonoBehaviour
         {
             blueWinsEvent.Raise();
         }
-    }
-
-    private IEnumerator KnockoutCoroutine()
-    {
-        StopRoundMusic();
-        audioSource.PlayOneShot(knockoutClip);
-        yield return new WaitForSeconds(knockoutClip.length);
+        audioSource.PlayOneShot(winnerClip);
     }
 
     private IEnumerator StartGameCoroutine()
@@ -83,7 +98,7 @@ public class GameMaster : MonoBehaviour
         audioSource.PlayOneShot(roundStartClip);
         gameStartOverlay.SetActive(false);
         yield return new WaitForSeconds(roundStartClip.length);
-        EnableBoxerControls(true);
+        EnableAllBoxersControls();
         PlayRoundMusic();
         startOfRoundEvent.Raise();
     }
@@ -93,17 +108,40 @@ public class GameMaster : MonoBehaviour
         MoveBoxersToStartingPositions();
         audioSource.PlayOneShot(roundStartClip);
         yield return new WaitForSeconds(roundStartClip.length);
-        EnableBoxerControls(true);
+        EnableAllBoxersControls();
         PlayRoundMusic();
         startOfRoundEvent.Raise();
     }
 
-    private void EnableBoxerControls(bool isEnabled)
+    private void EnableAllBoxersControls()
+    {
+        EnableBoxerControls(BoxerName.Red, true);
+        EnableBoxerControls(BoxerName.Blue, true);
+    }
+
+    private void DisableAllBoxersControls()
+    {
+        EnableBoxerControls(BoxerName.Red, false);
+        EnableBoxerControls(BoxerName.Blue, false);
+    }
+
+    private void EnableBoxerControls(BoxerName name, bool isEnabled)
     {
         var boxers = GameObject.FindObjectsOfType<Boxer>();
         foreach (var boxer in boxers)
         {
-            boxer.enabled = isEnabled;
+            if (boxer.GetName() == name)
+            {
+                var actions = boxer.GetComponent<PlayerInput>().currentActionMap;
+                if (isEnabled)
+                {
+                    actions.Enable();
+                }
+                else
+                {
+                    actions.Disable();
+                }
+            }
         }
     }
 
@@ -113,6 +151,7 @@ public class GameMaster : MonoBehaviour
         foreach (var boxer in boxers)
         {
             boxer.MoveToStartingPosition();
+            boxer.ResetHealth();
         }
     }
 

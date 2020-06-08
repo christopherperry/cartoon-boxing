@@ -90,6 +90,16 @@ public class Boxer : MonoBehaviour
     public void MoveToStartingPosition()
     {
         transform.position = startingPosition;
+        rigidbody.velocity = Vector2.zero;
+    }
+
+    public void ResetHealth()
+    {
+        currentHealth.Value = maxHealth.Value;
+        currentHearts.Value = maxHearts.Value;
+
+        onHealthChange.Raise();
+        onHeartsChange.Raise();
     }
 
     public BoxerName GetName()

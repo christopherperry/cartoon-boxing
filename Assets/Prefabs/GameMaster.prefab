@@ -280,6 +280,7 @@ MonoBehaviour:
   roundStartClip: {fileID: 8300000, guid: db3e40d3f71d31b4f8604f349af48677, type: 3}
   roundEndClip: {fileID: 8300000, guid: e30e32edf7fe16a469317a55a551b8e5, type: 3}
   knockoutClip: {fileID: 8300000, guid: 820442e6985a3194f90bc964f974eea6, type: 3}
+  winnerClip: {fileID: 8300000, guid: 31e864329d6184345bc36f8f7c565aeb, type: 3}
   musicAudioSource: {fileID: 31299550}
   menuClip: {fileID: 8300000, guid: e4de79a82b25e9a40af8b2f45aa53973, type: 3}
   roundMusicClip: {fileID: 8300000, guid: 3893d2371d1755743a33d7c72ca462a4, type: 3}
@@ -301,7 +302,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3785860759780778711}
-        m_MethodName: OnPlayerJoin
+        m_MethodName: OnBluePlayerJoin
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -328,7 +329,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3785860759780778711}
-        m_MethodName: OnPlayerJoin
+        m_MethodName: OnRedPlayerJoin
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
