@@ -770,6 +770,21 @@ PrefabInstance:
       propertyPath: gameStartOverlay
       value: 
       objectReference: {fileID: 2102809201}
+    - target: {fileID: 3785860759780778711, guid: 411d140150d3cff40abdf6f6c28b08b6,
+        type: 3}
+      propertyPath: knockoutCheerClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 820442e6985a3194f90bc964f974eea6, type: 3}
+    - target: {fileID: 3785860759780778711, guid: 411d140150d3cff40abdf6f6c28b08b6,
+        type: 3}
+      propertyPath: knockoutClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 31e864329d6184345bc36f8f7c565aeb, type: 3}
+    - target: {fileID: 3785860759780778711, guid: 411d140150d3cff40abdf6f6c28b08b6,
+        type: 3}
+      propertyPath: winnerClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 593f0f6f79bf8bd4d8169d8dc2e16ba2, type: 3}
     - target: {fileID: 3785860759780778714, guid: 411d140150d3cff40abdf6f6c28b08b6,
         type: 3}
       propertyPath: m_Name

@@ -91,11 +91,17 @@ public class Boxer : MonoBehaviour
     {
         transform.position = startingPosition;
         rigidbody.velocity = Vector2.zero;
+
+        isBlocking = false;
+        isPunching = false;
+        isDizzy = false;
+        isInFlightMode = false;
+        isKnockedOut = false;
     }
 
     public void ResetHealth()
     {
-        currentHealth.Value = maxHealth.Value;
+        currentHealth.Value += (maxHealth.Value - currentHealth.Value) / 2f;
         currentHearts.Value = maxHearts.Value;
 
         onHealthChange.Raise();
@@ -228,7 +234,6 @@ public class Boxer : MonoBehaviour
             audioSource.PlayOneShot(punchBlockedClip);
             return;
         }
-
         
         currentHealth.Value -= damage;
         onHealthChange.Raise();
@@ -263,6 +268,7 @@ public class Boxer : MonoBehaviour
             audioSource.PlayOneShot(hurtClip);
         }
 
+        isInFlightMode = false;
         isPunching = false;
     }
 

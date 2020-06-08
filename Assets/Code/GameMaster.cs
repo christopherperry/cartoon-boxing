@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using static Boxer;
 
 public class GameMaster : MonoBehaviour
@@ -14,6 +15,7 @@ public class GameMaster : MonoBehaviour
     public AudioClip roundStartClip;
     public AudioClip roundEndClip;
     public AudioClip knockoutClip;
+    public AudioClip knockoutCheerClip;
     public AudioClip winnerClip;
 
     public AudioSource musicAudioSource;
@@ -75,7 +77,9 @@ public class GameMaster : MonoBehaviour
     {
         StopRoundMusic();
         audioSource.PlayOneShot(knockoutClip);
-        yield return new WaitForSeconds(knockoutClip.length);
+        audioSource.PlayOneShot(knockoutCheerClip);
+        yield return new WaitForSeconds(knockoutClip.length / 3f);
+        audioSource.Stop();
 
         var winnerName = GetWinnerName();
         if (winnerName == BoxerName.Red)
@@ -88,6 +92,10 @@ public class GameMaster : MonoBehaviour
             blueWinsEvent.Raise();
         }
         audioSource.PlayOneShot(winnerClip);
+        yield return new WaitForSeconds(winnerClip.length);
+        audioSource.Stop();
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private IEnumerator StartGameCoroutine()
