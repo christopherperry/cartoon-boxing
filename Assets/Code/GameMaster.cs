@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static Boxer;
 
 public class GameMaster : MonoBehaviour
 {
     public GameEvent startOfRoundEvent;
+    public GameEvent redWinsEvent;
+    public GameEvent blueWinsEvent;
 
     public AudioClip playerJoinClip;
     public AudioClip gameStartClip;
@@ -23,6 +26,7 @@ public class GameMaster : MonoBehaviour
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        gameStartOverlay.SetActive(true);
     }
 
     private void Start()
@@ -51,6 +55,17 @@ public class GameMaster : MonoBehaviour
     public void OnKnockout()
     {
         StartCoroutine(KnockoutCoroutine());
+
+        var winnerName = GetWinnerName();
+        if (winnerName == BoxerName.Red)
+        {
+            redWinsEvent.Raise();
+        }
+
+        if (winnerName == BoxerName.Blue)
+        {
+            blueWinsEvent.Raise();
+        }
     }
 
     private IEnumerator KnockoutCoroutine()
@@ -99,6 +114,18 @@ public class GameMaster : MonoBehaviour
         {
             boxer.MoveToStartingPosition();
         }
+    }
+
+    private BoxerName GetWinnerName()
+    {
+        var boxers = GameObject.FindObjectsOfType<Boxer>();
+        foreach (var boxer in boxers)
+        {
+            if (!boxer.IsKnockedOut()) return boxer.GetName();
+        }
+
+        // Double KO?!
+        return BoxerName.None;
     }
 
     private void PlayRoundMusic()

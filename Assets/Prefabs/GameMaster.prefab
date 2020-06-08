@@ -140,6 +140,8 @@ GameObject:
   - component: {fileID: 3785860759780778711}
   - component: {fileID: 3785860759780778708}
   - component: {fileID: 3785860759780778709}
+  - component: {fileID: 6808615303367732221}
+  - component: {fileID: 466435657}
   m_Layer: 0
   m_Name: GameMaster
   m_TagString: Untagged
@@ -271,11 +273,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startOfRoundEvent: {fileID: 11400000, guid: 94aa062f3e893bd4d94589739ae43eed, type: 2}
+  redWinsEvent: {fileID: 11400000, guid: ed5ed45aa93e6504ba8320ecd63fb54c, type: 2}
+  blueWinsEvent: {fileID: 11400000, guid: d2d221af19024704893b635b17807825, type: 2}
   playerJoinClip: {fileID: 8300000, guid: 8c191e3764a1494498f97d0a172011ed, type: 3}
   gameStartClip: {fileID: 8300000, guid: 9832f12d1f15be44db8c96f475372c6b, type: 3}
   roundStartClip: {fileID: 8300000, guid: db3e40d3f71d31b4f8604f349af48677, type: 3}
   roundEndClip: {fileID: 8300000, guid: e30e32edf7fe16a469317a55a551b8e5, type: 3}
-  knockoutClip: {fileID: 0}
+  knockoutClip: {fileID: 8300000, guid: 820442e6985a3194f90bc964f974eea6, type: 3}
   musicAudioSource: {fileID: 31299550}
   menuClip: {fileID: 8300000, guid: e4de79a82b25e9a40af8b2f45aa53973, type: 3}
   roundMusicClip: {fileID: 8300000, guid: 3893d2371d1755743a33d7c72ca462a4, type: 3}
@@ -325,6 +329,60 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3785860759780778711}
         m_MethodName: OnPlayerJoin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6808615303367732221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3785860759780778714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84e2550e9d5f015419ac3cc72a4bd467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 9d26d1803120d2643b6aa60a08d7c851, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3785860759780778711}
+        m_MethodName: OnKnockout
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &466435657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3785860759780778714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84e2550e9d5f015419ac3cc72a4bd467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 76dc29d2aa40ece4d8275ee441a1d945, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3785860759780778711}
+        m_MethodName: OnRoundEnd
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

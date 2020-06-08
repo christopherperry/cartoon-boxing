@@ -121,123 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &262679873 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1324827995175609494, guid: 3b7d5c26340f885439501a8f4ac8761f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1324827994796636599}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &262679874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 262679873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84e2550e9d5f015419ac3cc72a4bd467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 94aa062f3e893bd4d94589739ae43eed, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 262679876}
-        m_MethodName: StartRoundTimer
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &262679876 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1324827995175609489, guid: 3b7d5c26340f885439501a8f4ac8761f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1324827994796636599}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 262679873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d1ad807b557bae488d70f494d6c48b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &466435655 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3785860759780778714, guid: 411d140150d3cff40abdf6f6c28b08b6,
-    type: 3}
-  m_PrefabInstance: {fileID: 3785860759316061341}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &466435656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 466435655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84e2550e9d5f015419ac3cc72a4bd467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 9d26d1803120d2643b6aa60a08d7c851, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 466435658}
-        m_MethodName: OnKnockout
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &466435657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 466435655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84e2550e9d5f015419ac3cc72a4bd467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 76dc29d2aa40ece4d8275ee441a1d945, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 466435658}
-        m_MethodName: OnRoundEnd
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &466435658 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3785860759780778711, guid: 411d140150d3cff40abdf6f6c28b08b6,
-    type: 3}
-  m_PrefabInstance: {fileID: 3785860759316061341}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 466435655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b98f74a1f1b04d4daa519ae27aefb53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,11 +527,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameStartOverlay
       objectReference: {fileID: 0}
-    - target: {fileID: 1813612979231735377, guid: 67f35d080fc31894ba00fa52f44af41d,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1813612979231735381, guid: 67f35d080fc31894ba00fa52f44af41d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -892,11 +770,6 @@ PrefabInstance:
       propertyPath: gameStartOverlay
       value: 
       objectReference: {fileID: 2102809201}
-    - target: {fileID: 3785860759780778711, guid: 411d140150d3cff40abdf6f6c28b08b6,
-        type: 3}
-      propertyPath: knockoutClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 820442e6985a3194f90bc964f974eea6, type: 3}
     - target: {fileID: 3785860759780778714, guid: 411d140150d3cff40abdf6f6c28b08b6,
         type: 3}
       propertyPath: m_Name
@@ -966,6 +839,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3960911999418071171, guid: 35f6946f14600be45a4718861a773102,
+        type: 3}
+      propertyPath: leftHurtClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 2fd57fdfc5ebc2f439a957a09a04e016, type: 3}
     - target: {fileID: 3960911999418071172, guid: 35f6946f14600be45a4718861a773102,
         type: 3}
       propertyPath: m_Name
@@ -1064,6 +942,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7380260669524238289, guid: fd59ea8bfdf75de49b70e3858f2611b7,
+        type: 3}
+      propertyPath: leftHurtClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 2fd57fdfc5ebc2f439a957a09a04e016, type: 3}
     - target: {fileID: 7380260669524238298, guid: fd59ea8bfdf75de49b70e3858f2611b7,
         type: 3}
       propertyPath: m_Name

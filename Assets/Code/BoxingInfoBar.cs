@@ -17,6 +17,7 @@ public class BoxingInfoBar : MonoBehaviour
     public Slider blueSlider;
 
     public TextMeshProUGUI timerText;
+    public TextMeshProUGUI roundText;
 
     public FloatVariable redHeartsCount;
     public TextMeshProUGUI redHeartsText;
@@ -24,10 +25,20 @@ public class BoxingInfoBar : MonoBehaviour
     public FloatVariable blueHeartsCount;
     public TextMeshProUGUI blueHeartsText;
 
+    public GameObject redWinsMessage;
+    public GameObject blueWinsMessage;
+
+    private IEnumerator roundTimer;
+    private int roundNumber = 1;
+    private int roundTimeSeconds = 180;
+
     private void Awake()
     {
-        var timeSeconds = 0f;
-        timerText.text = TimeSpan.FromSeconds(timeSeconds).ToString(@"mm\:ss");
+        timerText.text = TimeSpan.FromSeconds(0f).ToString(@"mm\:ss");
+        roundText.text = $"Round {roundNumber}";
+
+        redWinsMessage.SetActive(false);
+        blueWinsMessage.SetActive(false);
     }
 
     public void UpdateHealthBars()
@@ -42,9 +53,22 @@ public class BoxingInfoBar : MonoBehaviour
         blueHeartsText.text = $"{blueHeartsCount.Value}";
     }
 
-    public void StartRoundTimer()
+    public void StartNewRound()
     {
-        StartCoroutine(RoundTimer());
+        roundTimer = RoundTimer();
+        StartCoroutine(roundTimer);
+    }
+
+    public void OnRedWins()
+    {
+        redWinsMessage.SetActive(true);
+        StopCoroutine(roundTimer);
+    }
+
+    public void OnBlueWins()
+    {
+        blueWinsMessage.SetActive(true);
+        StopCoroutine(roundTimer);
     }
 
     private IEnumerator RoundTimer()
@@ -52,7 +76,7 @@ public class BoxingInfoBar : MonoBehaviour
         var timeSeconds = 0f;
         timerText.text = TimeSpan.FromSeconds(timeSeconds).ToString(@"mm\:ss");
 
-        while (timeSeconds < 180)
+        while (timeSeconds < roundTimeSeconds)
         {
             timeSeconds += 1;
             Debug.Log("Time seconds = " + timeSeconds);
@@ -60,6 +84,9 @@ public class BoxingInfoBar : MonoBehaviour
             timerText.text = TimeSpan.FromSeconds(timeSeconds).ToString(@"mm\:ss");
         }
 
+        roundNumber++;
+        roundText.text = $"Round {roundNumber}";
+        timerText.text = TimeSpan.FromSeconds(0).ToString(@"mm\:ss");
         endOfRoundEvent.Raise();
     }
 }

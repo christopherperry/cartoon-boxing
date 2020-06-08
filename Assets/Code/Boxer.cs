@@ -5,6 +5,14 @@ using UnityEngine.InputSystem;
 
 public class Boxer : MonoBehaviour
 {
+    public enum BoxerName
+    {
+        Red,
+        Blue,
+        None
+    }
+
+    public BoxerName name;
     public GameEvent knockoutEvent;
 
     public FloatVariable maxHealth;
@@ -16,6 +24,7 @@ public class Boxer : MonoBehaviour
     public GameEvent onHeartsChange;
 
     public float dizzyTimeSeconds = 2f;
+    public int heartsLostPerBlock = 3;
     public float movementSpeed;
     public bool movementEnabled = true;
     public LayerMask opponentLayerMask;
@@ -39,14 +48,14 @@ public class Boxer : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private bool isBlocking;
+    private bool isPunching;
     private bool isKnockedOut;
     private bool isInFlightMode;
+    private bool isDizzy;
     private Vector2 movement;
 
     private Vector2 startingPosition;
     private bool canBlock = true;
-    private bool canPunch = true;
-    private bool canMove = true;
     private ContactFilter2D contactFilter;
 
     private void Awake()
@@ -83,6 +92,16 @@ public class Boxer : MonoBehaviour
         transform.position = startingPosition;
     }
 
+    public BoxerName GetName()
+    {
+        return name;
+    }
+
+    public bool IsKnockedOut()
+    {
+        return isKnockedOut;
+    }
+
     #region Input Action Handling
 
     private void OnMove(InputValue inputValue)
@@ -92,10 +111,9 @@ public class Boxer : MonoBehaviour
 
     private void OnBlock(InputValue inputValue)
     {
-        if (!canBlock || isInFlightMode) return;
+        if (!canBlock || isInFlightMode || isDizzy) return;
 
         isBlocking = inputValue.isPressed;
-        canPunch = !isBlocking;
 
         animator.SetBool("block", isBlocking);
 
@@ -107,10 +125,9 @@ public class Boxer : MonoBehaviour
 
     private void OnPunchLeft(InputValue inputValue)
     {
-        if (!canPunch || isInFlightMode) return;
+        if (isPunching || isBlocking || isInFlightMode || isDizzy) return;
 
-        canMove = false;
-        LoseHearts(1);
+        isPunching = true;
 
         if (transform.localScale.x < 0 && movement.y > 0)
         {
@@ -128,10 +145,9 @@ public class Boxer : MonoBehaviour
 
     private void OnPunchRight(InputValue inputValue)
     {
-        if (!canPunch || isInFlightMode) return;
+        if (isPunching || isBlocking || isInFlightMode || isDizzy) return;
 
-        canMove = false;
-        LoseHearts(1);
+        isPunching = true;
 
         if (transform.localScale.x > 0 && movement.y > 0)
         {
@@ -175,46 +191,46 @@ public class Boxer : MonoBehaviour
     {
         if (isBeingShoved) return;
 
-        if (isKnockedOut || isBlocking || !canMove)
+        if (isKnockedOut || isBlocking || isPunching || isDizzy)
         {
             rigidbody.velocity = Vector2.zero;
+            animator.SetFloat("velocity", 0f);
         }
         else
         {
             rigidbody.velocity = new Vector2(movement.x * movementSpeed, 0f);
+            animator.SetFloat("velocity", rigidbody.velocity.x * transform.localScale.x);
         }
-
-        animator.SetFloat("velocity", rigidbody.velocity.x * transform.localScale.x);
     }
 
     #endregion
 
     #region Being Punched By Other Boxer
 
-    public void ReceivePunch(Boxer otherBoxer, int damage, AudioClip hurtClip)
+    public void ReceivePunch(Boxer otherBoxer, float damage, AudioClip hurtClip)
     {
         if (isKnockedOut) return;
 
-        // Lose a heart whether blocking or not
-        LoseHearts(1);
-
         if (isBlocking)
         {
+            LoseHearts(heartsLostPerBlock);
             otherBoxer.OnPunchBlocked();
             audioSource.PlayOneShot(punchBlockedClip);
             return;
         }
 
-        StartCoroutine(ShoveBoxerBack());
+        
         currentHealth.Value -= damage;
         onHealthChange.Raise();
 
-        if (damage > 1)
+        if (damage >= 1)
         {
             RumbleGamepadLow();
+            StartCoroutine(ShoveBoxerBack(2f));
         }
         else
         {
+            ShoveBoxerBack(0.25f);
             RumbleGamepadHigh();
         }
 
@@ -227,17 +243,23 @@ public class Boxer : MonoBehaviour
             audioSource.PlayOneShot(knockoutClip);
             knockoutEvent.Raise();
         }
+        else if (isPunching)
+        {
+            StartCoroutine(BeDizzy());
+        }
         else
         {
             animator.SetTrigger("hurt");
             audioSource.PlayOneShot(hurtClip);
         }
+
+        isPunching = false;
     }
 
-    private IEnumerator ShoveBoxerBack()
+    private IEnumerator ShoveBoxerBack(float forceMagnitude)
     {
         isBeingShoved = true;
-        rigidbody.AddForce(new Vector2(-transform.localScale.x * 2f, 0f), ForceMode2D.Impulse);
+        rigidbody.AddForce(new Vector2(-transform.localScale.x * forceMagnitude, 0f), ForceMode2D.Impulse);
         while (Mathf.Abs(rigidbody.velocity.x) > 0.01f)
         {
             yield return null;
@@ -262,17 +284,14 @@ public class Boxer : MonoBehaviour
     private IEnumerator FlightNotFightMode()
     {
         isInFlightMode = true;
-        canMove = true;
-        canPunch = false;
         canBlock = false;
 
         animator.SetBool("block", false);
         spriteRenderer.color = new Color(0f, 255f, 218f);
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(dizzyTimeSeconds);
         spriteRenderer.color = Color.white;
 
         isInFlightMode = false;
-        canPunch = true;
         canBlock = true;
 
         currentHearts.Value = maxHearts.Value;
@@ -281,16 +300,9 @@ public class Boxer : MonoBehaviour
 
     #region Stuff that's called from the Animator
 
-    public void OnPunchStart()
-    {
-        canMove = false;
-        canPunch = false;
-    }
-
     public void OnPunchEnd()
     {
-        canMove = true;
-        canPunch = true;
+        isPunching = false;
     }
 
     private void SetDead()
@@ -301,6 +313,7 @@ public class Boxer : MonoBehaviour
         animator.SetBool("dead", true);
     }
 
+    // Left is a jab
     private void OnLeftPunch()
     {
         Collider2D collider = leftPunchTrigger;
@@ -311,17 +324,18 @@ public class Boxer : MonoBehaviour
         }
         else
         {
-            OnPunch(collider, leftHurtClip, 1);
+            OnPunch(collider, leftHurtClip, 0.25f);
         }
     }
 
+    // Right is a straight
     private void OnRightPunch()
     {
         Collider2D collider = rightPunchTrigger;
         if (transform.localScale.x < 0)
         {
             collider = leftPunchTrigger;
-            OnPunch(collider, leftHurtClip, 1);
+            OnPunch(collider, leftHurtClip, 0.25f);
         }
         else
         {
@@ -334,22 +348,23 @@ public class Boxer : MonoBehaviour
         OnPunch(upPunchTrigger, upHurtClip, 2);
     }
 
-    private void OnPunch(Collider2D collider, AudioClip hurtClip, int damage)
+    private void OnPunch(Collider2D collider, AudioClip hurtClip, float damage)
     {
         var hits = new List<Collider2D>();
         int numHits = collider.OverlapCollider(contactFilter, hits);
         if (numHits > 0)
         {
-            if (damage > 1)
+            if (damage >= 1)
             {
                 RumbleGamepadLow();
+                StartCoroutine(ShoveBoxerBack(1f));
             }
             else
             {
                 RumbleGamepadHigh();
             }
 
-            StartCoroutine(ShoveBoxerBack());
+            
             hits[0].gameObject.GetComponentInParent<Boxer>().ReceivePunch(this, damage, hurtClip);
         }
     }
@@ -363,10 +378,12 @@ public class Boxer : MonoBehaviour
 
     private IEnumerator BeDizzy()
     {
+        isDizzy = true;
         animator.SetBool("dizzy", true);
         audioSource.PlayOneShot(dizzyClip);
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(dizzyTimeSeconds);
         animator.SetBool("dizzy", false);
+        isDizzy = false;
     }
 
     private void RumbleGamepadHigh()
