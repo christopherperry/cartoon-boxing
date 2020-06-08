@@ -248,6 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d1774ad80bf204cbf732ee676d182a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  knockoutEvent: {fileID: 11400000, guid: 9d26d1803120d2643b6aa60a08d7c851, type: 2}
   maxHealth: {fileID: 11400000, guid: 5cace594d406b7942bc329feb484f47f, type: 2}
   currentHealth: {fileID: 11400000, guid: 62aa53ccaa290934eae9ef9edc135fdb, type: 2}
   onHealthChange: {fileID: 11400000, guid: a19dd2b2ee41aef40b8293b72aaa62b4, type: 2}

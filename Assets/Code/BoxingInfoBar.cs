@@ -24,6 +24,12 @@ public class BoxingInfoBar : MonoBehaviour
     public FloatVariable blueHeartsCount;
     public TextMeshProUGUI blueHeartsText;
 
+    private void Awake()
+    {
+        var timeSeconds = 0f;
+        timerText.text = TimeSpan.FromSeconds(timeSeconds).ToString(@"mm\:ss");
+    }
+
     public void UpdateHealthBars()
     {
         blueSlider.value = blueHealth.Value / maxHealth.Value;

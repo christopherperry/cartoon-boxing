@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class Boxer : MonoBehaviour
 {
+    public GameEvent knockoutEvent;
+
     public FloatVariable maxHealth;
     public FloatVariable currentHealth;
     public GameEvent onHealthChange;
@@ -37,10 +39,12 @@ public class Boxer : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private bool isBlocking;
-    private bool isDead;
+    private bool isKnockedOut;
+    private bool isInFlightMode;
     private Vector2 movement;
 
     private Vector2 startingPosition;
+    private bool canBlock = true;
     private bool canPunch = true;
     private bool canMove = true;
     private ContactFilter2D contactFilter;
@@ -88,6 +92,8 @@ public class Boxer : MonoBehaviour
 
     private void OnBlock(InputValue inputValue)
     {
+        if (!canBlock || isInFlightMode) return;
+
         isBlocking = inputValue.isPressed;
         canPunch = !isBlocking;
 
@@ -101,8 +107,10 @@ public class Boxer : MonoBehaviour
 
     private void OnPunchLeft(InputValue inputValue)
     {
-        if (!canPunch) return;
+        if (!canPunch || isInFlightMode) return;
+
         canMove = false;
+        LoseHearts(1);
 
         if (transform.localScale.x < 0 && movement.y > 0)
         {
@@ -120,8 +128,10 @@ public class Boxer : MonoBehaviour
 
     private void OnPunchRight(InputValue inputValue)
     {
-        if (!canPunch) return;
+        if (!canPunch || isInFlightMode) return;
+
         canMove = false;
+        LoseHearts(1);
 
         if (transform.localScale.x > 0 && movement.y > 0)
         {
@@ -159,9 +169,13 @@ public class Boxer : MonoBehaviour
 
     #region Fixed Update
 
+    private bool isBeingShoved;
+
     private void FixedUpdate()
     {
-        if (isDead || isBlocking || !canMove)
+        if (isBeingShoved) return;
+
+        if (isKnockedOut || isBlocking || !canMove)
         {
             rigidbody.velocity = Vector2.zero;
         }
@@ -179,8 +193,10 @@ public class Boxer : MonoBehaviour
 
     public void ReceivePunch(Boxer otherBoxer, int damage, AudioClip hurtClip)
     {
+        if (isKnockedOut) return;
+
         // Lose a heart whether blocking or not
-        LoseAHeart();
+        LoseHearts(1);
 
         if (isBlocking)
         {
@@ -189,6 +205,7 @@ public class Boxer : MonoBehaviour
             return;
         }
 
+        StartCoroutine(ShoveBoxerBack());
         currentHealth.Value -= damage;
         onHealthChange.Raise();
 
@@ -204,9 +221,11 @@ public class Boxer : MonoBehaviour
         if (currentHealth.Value <= 0)
         {
             Time.timeScale = 0.33f;
+            isKnockedOut = true;
             spriteRenderer.sortingOrder = spriteRenderer.sortingOrder - 1;
             animator.SetBool("ko", true);
             audioSource.PlayOneShot(knockoutClip);
+            knockoutEvent.Raise();
         }
         else
         {
@@ -215,12 +234,48 @@ public class Boxer : MonoBehaviour
         }
     }
 
+    private IEnumerator ShoveBoxerBack()
+    {
+        isBeingShoved = true;
+        rigidbody.AddForce(new Vector2(-transform.localScale.x * 2f, 0f), ForceMode2D.Impulse);
+        while (Mathf.Abs(rigidbody.velocity.x) > 0.01f)
+        {
+            yield return null;
+        }
+        isBeingShoved = false;
+    }
+
     #endregion
 
-    private void LoseAHeart()
+    private void LoseHearts(int numHearts)
     {
-        currentHearts.Value -= 1;
+        currentHearts.Value -= numHearts;
         currentHearts.Value = Mathf.Max(0, currentHearts.Value);
+        onHeartsChange.Raise();
+
+        if (currentHearts.Value <= 0)
+        {
+            StartCoroutine(FlightNotFightMode());
+        }
+    }
+
+    private IEnumerator FlightNotFightMode()
+    {
+        isInFlightMode = true;
+        canMove = true;
+        canPunch = false;
+        canBlock = false;
+
+        animator.SetBool("block", false);
+        spriteRenderer.color = new Color(0f, 255f, 218f);
+        yield return new WaitForSeconds(5f);
+        spriteRenderer.color = Color.white;
+
+        isInFlightMode = false;
+        canPunch = true;
+        canBlock = true;
+
+        currentHearts.Value = maxHearts.Value;
         onHeartsChange.Raise();
     }
 
@@ -241,7 +296,6 @@ public class Boxer : MonoBehaviour
     private void SetDead()
     {
         Time.timeScale = 1f;
-        isDead = true;
         rigidbody.isKinematic = true;
         animator.SetBool("ko", false);
         animator.SetBool("dead", true);
@@ -295,13 +349,14 @@ public class Boxer : MonoBehaviour
                 RumbleGamepadHigh();
             }
 
+            StartCoroutine(ShoveBoxerBack());
             hits[0].gameObject.GetComponentInParent<Boxer>().ReceivePunch(this, damage, hurtClip);
         }
     }
 
     public void OnPunchBlocked()
     {
-        LoseAHeart();
+        LoseHearts(1);
     }
 
     #endregion

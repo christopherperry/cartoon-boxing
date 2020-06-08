@@ -9,6 +9,7 @@ public class GameMaster : MonoBehaviour
     public AudioClip gameStartClip;
     public AudioClip roundStartClip;
     public AudioClip roundEndClip;
+    public AudioClip knockoutClip;
 
     public AudioSource musicAudioSource;
     public AudioClip menuClip;
@@ -47,10 +48,21 @@ public class GameMaster : MonoBehaviour
         StartCoroutine(StartRoundCoroutine());
     }
 
+    public void OnKnockout()
+    {
+        StartCoroutine(KnockoutCoroutine());
+    }
+
+    private IEnumerator KnockoutCoroutine()
+    {
+        StopRoundMusic();
+        audioSource.PlayOneShot(knockoutClip);
+        yield return new WaitForSeconds(knockoutClip.length);
+    }
+
     private IEnumerator StartGameCoroutine()
     {
         StopMenuMusic();
-        // yield return new WaitForSeconds(playerJoinClip.length);
         audioSource.PlayOneShot(gameStartClip);
         yield return new WaitForSeconds(gameStartClip.length);
         audioSource.PlayOneShot(roundStartClip);
