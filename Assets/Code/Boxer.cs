@@ -40,6 +40,7 @@ public class Boxer : MonoBehaviour
     private bool isDead;
     private Vector2 movement;
 
+    private Vector2 startingPosition;
     private bool canPunch = true;
     private bool canMove = true;
     private ContactFilter2D contactFilter;
@@ -53,6 +54,8 @@ public class Boxer : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         rigidbody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        startingPosition = transform.position;
 
         contactFilter = new ContactFilter2D();
         contactFilter.useLayerMask = true;
@@ -71,17 +74,20 @@ public class Boxer : MonoBehaviour
         onHeartsChange.Raise();
     }
 
+    public void MoveToStartingPosition()
+    {
+        transform.position = startingPosition;
+    }
+
     #region Input Action Handling
 
     private void OnMove(InputValue inputValue)
     {
-        Debug.Log("OnMove: value = " + inputValue.Get<Vector2>());
         movement = inputValue.Get<Vector2>();
     }
 
     private void OnBlock(InputValue inputValue)
     {
-        Debug.Log("OnBlock: pressed = " + inputValue.isPressed);
         isBlocking = inputValue.isPressed;
         canPunch = !isBlocking;
 
@@ -98,7 +104,6 @@ public class Boxer : MonoBehaviour
         if (!canPunch) return;
         canMove = false;
 
-        Debug.Log("OnPunchLeft");
         if (transform.localScale.x < 0 && movement.y > 0)
         {
             OnUpPunchAction();
@@ -118,7 +123,6 @@ public class Boxer : MonoBehaviour
         if (!canPunch) return;
         canMove = false;
 
-        Debug.Log("OnPunchRight");
         if (transform.localScale.x > 0 && movement.y > 0)
         {
             OnUpPunchAction();

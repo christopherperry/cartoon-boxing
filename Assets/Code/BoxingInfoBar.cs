@@ -24,11 +24,6 @@ public class BoxingInfoBar : MonoBehaviour
     public FloatVariable blueHeartsCount;
     public TextMeshProUGUI blueHeartsText;
 
-    private void Start()
-    {
-        StartRound();
-    }
-
     public void UpdateHealthBars()
     {
         blueSlider.value = blueHealth.Value / maxHealth.Value;
@@ -41,7 +36,7 @@ public class BoxingInfoBar : MonoBehaviour
         blueHeartsText.text = $"{blueHeartsCount.Value}";
     }
 
-    public void StartRound()
+    public void StartRoundTimer()
     {
         StartCoroutine(RoundTimer());
     }
